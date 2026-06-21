@@ -48,3 +48,4 @@ class ParallaxBackground:
             window.blit(layer["surf"], (x, 0), area=pygame.Rect(0, 0, window_width, window_height))
             window.blit(layer["surf"], (x + image_width, 0), area=pygame.Rect(0, 0, window_width, window_height))
 
+

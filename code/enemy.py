@@ -18,3 +18,4 @@ class Enemy(Entity):
         self.pos_x -= self.speed * dt
         self.update_animation(dt)
 
+

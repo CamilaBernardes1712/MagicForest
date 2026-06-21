@@ -22,6 +22,8 @@ from code.config import (
     WINDOW_WIDTH,
 )
 from code.entityFactory import EntityFactory
+from code.score import Score
+
 
 class Level:
     def __init__(self, window, name="Magic Forest", menu_option=None):
@@ -44,6 +46,8 @@ class Level:
         self.victory_timer = 0.0
         self.enemy_spawn_timer = GOLEM_MIN_TIME
         self.golem_rei_instancia = None
+        self.defeated_golems = 0
+        self.score_saved = False
 
         pygame.mixer.init()
         base_path = os.getcwd()
@@ -241,6 +245,19 @@ class Level:
                     if enemy.name == "GolemMaior":
                         self.game_over_victory = True
                         self.victory_timer = 5.0
+                        if not self.score_saved and player:
+                            score = Score()
+                            score.save(
+                                player_name="Guarda",
+                                crystals=self.crystal_count,
+                                defeated_golems=self.defeated_golems,
+                                player_hp=player.hp,
+                                victory=True,
+                            )
+                            score.close()
+                            self.score_saved = True
+                    else:
+                        self.defeated_golems += 1
                     self.entity_list.remove(enemy)
 
             if player and self.current_crystal_rect and player.rect and player.rect.colliderect(self.current_crystal_rect):

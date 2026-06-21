@@ -4,7 +4,6 @@
 import os
 import pygame
 
-
 class Menu:
     def __init__(self, window):
         self.window = window
@@ -28,7 +27,7 @@ class Menu:
             print("Aviso: Audio de fundo nao encontrado.")
 
         menu_option = 0
-        menu_options = ["Start Game", "Exit"]
+        menu_options = ["Start Game", "Score", "Exit"]
 
         while True:
             self.window.blit(source=self.surf, dest=self.rect)
@@ -36,15 +35,15 @@ class Menu:
 
             mouse_pos = pygame.mouse.get_pos()
             for i, option in enumerate(menu_options):
-                pos_y = 420 + (i * 80)
+                pos_y = 400 + (i * 70)
                 if 500 < mouse_pos[0] < 780 and (pos_y - 25) < mouse_pos[1] < (pos_y + 25):
                     menu_option = i
 
                 color = (28, 27, 8) if i == menu_option else (255, 255, 255)
                 self.menu_text(50, option, color, (640, pos_y))
 
-            self.menu_text(20, "Movimentação: use as setas do teclado", (220, 220, 220), (640, 625))
-            self.menu_text(20, "Atirar: pressione a barra de espaço", (220, 220, 220), (640, 655))
+            self.menu_text(20, "Movimentação: use as setas do teclado", (220, 220, 220), (640, 635))
+            self.menu_text(20, "Atirar: pressione a barra de espaço", (220, 220, 220), (640, 665))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
