@@ -60,10 +60,15 @@ Isso melhora a organização do código, pois centraliza as operações de banco
 ```text
 MagicForest/
 ├── main.py
+├── setup.py
+├── requirements.txt
+├── README.md
+├── .gitignore
 ├── code/
+│   ├── arrow.py
 │   ├── background.py
 │   ├── config.py
-│   ├── dbProxy.py
+│   ├── DBProxy.py
 │   ├── enemy.py
 │   ├── entity.py
 │   ├── entityFactory.py
@@ -73,6 +78,7 @@ MagicForest/
 │   ├── guardaFlorestal.py
 │   ├── level.py
 │   ├── menu.py
+│   ├── paths.py
 │   ├── score.py
 │   └── scoreScreen.py
 └── asset/
