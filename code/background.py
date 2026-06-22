@@ -4,6 +4,8 @@
 import os
 import pygame
 
+from code.paths import resource_path
+
 class ParallaxBackground:
     def __init__(self, window_width=1280, window_height=720):
         display = pygame.display.get_surface()
@@ -13,8 +15,7 @@ class ParallaxBackground:
             self.window_width = window_width
             self.window_height = window_height
 
-        base_path = os.getcwd()
-        bg_dir = os.path.join(base_path, "asset", "images", "background")
+        bg_dir = resource_path("asset/images/background")
         self.layers_config = [
             ("game_background_1.png", 0.1),
             ("back_land.png", 0.3),
@@ -47,5 +48,6 @@ class ParallaxBackground:
             x = int(layer["x"])
             window.blit(layer["surf"], (x, 0), area=pygame.Rect(0, 0, window_width, window_height))
             window.blit(layer["surf"], (x + image_width, 0), area=pygame.Rect(0, 0, window_width, window_height))
+
 
 

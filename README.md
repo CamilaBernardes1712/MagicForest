@@ -100,7 +100,6 @@ pip install pygame
 
 ## Possíveis melhorias futuras
 
-* Adicionar tela de Game Over
 * Permitir que o jogador digite seu nome antes de salvar o score
 * Adicionar barra de vida para o guarda florestal
 * Criar novas fases

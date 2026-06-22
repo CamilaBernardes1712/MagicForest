@@ -22,7 +22,7 @@ class ScoreScreen:
             self.window.blit(title, ((1280 - title.get_width()) // 2, 70))
 
             if not top_scores:
-                text = self.font.render("Nenhuma pontuacao salva ainda.", True, (255, 255, 255))
+                text = self.font.render("Nenhuma pontuação salva ainda.", True, (255, 255, 255))
                 self.window.blit(text, ((1280 - text.get_width()) // 2, 230))
             else:
                 for index, row in enumerate(top_scores, start=1):
@@ -42,3 +42,4 @@ class ScoreScreen:
                     return
 
             pygame.display.flip()
+

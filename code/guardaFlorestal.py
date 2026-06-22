@@ -6,6 +6,7 @@ import pygame
 
 from code.config import PLAYER_HP, PLAYER_SPEED, WINDOW_HEIGHT, WINDOW_WIDTH
 from code.entity import Entity
+from code.paths import resource_path
 
 class GuardaFlorestal(Entity):
     def __init__(self, pos_x: float, pos_y: float):
@@ -15,8 +16,7 @@ class GuardaFlorestal(Entity):
         self.shot_cooldown = 0.0
         self.arrow_requested = False
 
-        base_path = os.getcwd()
-        audio_path = os.path.join(base_path, "asset", "audio", "Lança flecha.mp3")
+        audio_path = resource_path(os.path.join("asset", "audio", "Lança flecha.mp3"))
         self.sound_arrow = pygame.mixer.Sound(audio_path)
 
     def move(self, dt: float):

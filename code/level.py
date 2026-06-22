@@ -22,6 +22,7 @@ from code.config import (
     WINDOW_WIDTH,
 )
 from code.entityFactory import EntityFactory
+from code.paths import resource_path
 from code.score import Score
 
 
@@ -43,15 +44,16 @@ class Level:
         self.boss_warning_text = ""
         self.boss_warning_timer = 0.0
         self.game_over_victory = False
+        self.game_over_defeat = False
         self.victory_timer = 0.0
+        self.defeat_timer = 0.0
         self.enemy_spawn_timer = GOLEM_MIN_TIME
         self.golem_rei_instancia = None
         self.defeated_golems = 0
         self.score_saved = False
 
         pygame.mixer.init()
-        base_path = os.getcwd()
-        audio_dir = os.path.join(base_path, "asset", "audio")
+        audio_dir = resource_path(os.path.join("asset", "audio"))
         pygame.mixer.music.load(os.path.join(audio_dir, "Som de fundo.mp3"))
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
@@ -62,7 +64,7 @@ class Level:
         self.current_crystal_surf = None
         self.crystal_images = []
 
-        items_dir = os.path.join(base_path, "asset", "images", "items")
+        items_dir = resource_path(os.path.join("asset", "images", "items"))
         for i in range(1, 6):
             path_crystal = os.path.join(items_dir, f"{i}.png")
             try:
@@ -116,7 +118,7 @@ class Level:
         pygame.draw.rect(self.window, (255, 230, 120), (bar_x, bar_y, bar_width, bar_height), 2)
 
     def update_enemy_attack(self, enemy, player, dt):
-        if enemy.current_action == "Dying" or not player:
+        if enemy.current_action == "Dying" or not player or player.current_action == "Dying":
             return False
 
         enemy_rect = enemy.rect
@@ -146,6 +148,26 @@ class Level:
 
         return True
 
+    def start_defeat(self, player):
+        if self.game_over_defeat:
+            return
+
+        self.game_over_defeat = True
+        self.defeat_timer = 4.0
+        if player:
+            player.hp = 0
+            player.change_action("Dying")
+
+    def draw_game_over(self):
+        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 150))
+        self.window.blit(overlay, (0, 0))
+
+        txt_game_over = self.victory_font.render("Game Over", True, (220, 30, 30))
+        pos_x = (WINDOW_WIDTH - txt_game_over.get_width()) // 2
+        pos_y = (WINDOW_HEIGHT - txt_game_over.get_height()) // 2
+        self.window.blit(txt_game_over, (pos_x, pos_y))
+
     def run(self):
         clock = pygame.time.Clock()
         playing = True
@@ -163,6 +185,9 @@ class Level:
 
             player = self.entity_list[0] if self.entity_list else None
 
+            if player and player.hp <= 0 and not self.game_over_defeat:
+                self.start_defeat(player)
+
             if self.game_over_victory:
                 self.victory_timer -= dt
                 if self.victory_timer <= 0:
@@ -177,6 +202,29 @@ class Level:
                 pos_x = (WINDOW_WIDTH - txt_vitoria.get_width()) // 2
                 pos_y = (WINDOW_HEIGHT - txt_vitoria.get_height()) // 2
                 self.window.blit(txt_vitoria, (pos_x, pos_y))
+                pygame.display.flip()
+                continue
+
+            if self.game_over_defeat:
+                self.defeat_timer -= dt
+                if self.defeat_timer <= 0:
+                    pygame.mixer.music.stop()
+                    playing = False
+
+                self.window.fill((0, 0, 0))
+                self.background.draw(self.window)
+
+                if self.current_crystal_rect and self.current_crystal_surf:
+                    self.window.blit(self.current_crystal_surf, self.current_crystal_rect)
+
+                for arrow in self.arrows_list:
+                    pygame.draw.rect(self.window, (255, 215, 0), arrow)
+
+                for entity in self.entity_list:
+                    entity.move(dt)
+                    entity.draw(self.window)
+
+                self.draw_game_over()
                 pygame.display.flip()
                 continue
 
@@ -222,7 +270,7 @@ class Level:
                     self.arrows_list.remove(arrow)
 
             for entity in self.entity_list:
-                if entity is not player and entity.name == "Golem" and self.update_enemy_attack(entity, player, dt):
+                if entity is not player and entity.name in ("Golem", "GolemMaior") and self.update_enemy_attack(entity, player, dt):
                     pass
                 else:
                     entity.move(dt)
@@ -266,6 +314,9 @@ class Level:
                 self.current_crystal_rect = None
                 self.current_crystal_surf = None
 
+            if player and player.hp <= 0:
+                self.start_defeat(player)
+
             self.window.fill((0, 0, 0))
             self.background.draw(self.window)
 
@@ -296,4 +347,6 @@ class Level:
                 self.window.blit(txt_aviso, (pos_x_centro, 640))
 
             pygame.display.flip()
+
+
 

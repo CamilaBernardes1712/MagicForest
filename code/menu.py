@@ -4,11 +4,12 @@
 import os
 import pygame
 
+from code.paths import resource_path
+
 class Menu:
     def __init__(self, window):
         self.window = window
-        base_path = os.path.dirname(os.path.dirname(__file__))
-        image_path = os.path.join(base_path, "asset", "images", "backgroundmenu", "game_background_4.png")
+        image_path = resource_path(os.path.join("asset", "images", "backgroundmenu", "game_background_4.png"))
 
         try:
             imagem_original = pygame.image.load(image_path)
@@ -21,10 +22,10 @@ class Menu:
 
     def run(self):
         try:
-            pygame.mixer_music.load("./asset/audio/Som de fundo.mp3")
+            pygame.mixer_music.load(resource_path(os.path.join("asset", "audio", "Som de fundo.mp3")))
             pygame.mixer_music.play(-1)
         except pygame.error:
-            print("Aviso: Audio de fundo nao encontrado.")
+            print("Aviso: Áudio de fundo não encontrado.")
 
         menu_option = 0
         menu_options = ["Start Game", "Score", "Exit"]
@@ -72,4 +73,5 @@ class Menu:
         text_surf = text_font.render(text, True, text_color).convert_alpha()
         text_rect = text_surf.get_rect(center=text_center_pos)
         self.window.blit(source=text_surf, dest=text_rect)
+
 
